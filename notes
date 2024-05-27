@@ -1,0 +1,60 @@
+There are 2 producers --> one for string message producer and other JSON message producer
+There are 2 consumers --> one for string message consumer and other JSON message consumer
+
+For those two publishers, two KafkaTemplates are used.
+To consume those messages and objects two consumers are used. Two @KafkaListners are used to consume respective data.
+
+========================================
+
+Here we have setup kafka, zookeeper and schema registry in docker containers.
+
+1) To start docker containers:
+- docker-compose up --build
+
+2) To create topics:
+- For our usecase create 2 topics (message-topic (for string data)
+                                   superhero-topic (for SuperHero objects)):
+- First open the shell in the container: docker exec -it <container-id> /bin/bash
+- kafka-topics --bootstrap-server kafka:9092 --create  --topic consumer-demo --replication-factor 1 --partitions 1
+
+====================================
+
+Additional knowlege: docker commands
+
+docker ps
+
+docker exec -it 107b16ea56ae /bin/sh
+OR docker exec -it 107b16ea56ae /bin/bash
+
+These 3 below commands are to be used inside the shell of the container:
+a) kafka-topics --bootstrap-server kafka:9092 --create  --topic consumer-demo --replication-factor 1 --partitions 1
+
+b) kafka-topics --bootstrap-server kafka:9092 --list
+
+c) kafka-topics --bootstrap-server localhost:9092 --topic consumer-demo --delete
+
+
+To view the kafka logs, we can use:
+docker run --tty --network <networ-name>  confluentinc/cp-kafkacat kafkacat -b kafka:9092 -t <topic-name>
+
+
+========================================
+
+=======================================
+
+Start the spring boot application.
+
+API Endpoints
+GET Mapping http://localhost:8080/kafka/publish?message=test message
+
+POST Mapping http://localhost:8080/kafka/publish
+
+Request Body
+
+  {
+      "name": "Tony",
+      "superName": "Iron Man",
+      "profession": "Business",
+      "age": 50,
+      "canFly": true
+  }
